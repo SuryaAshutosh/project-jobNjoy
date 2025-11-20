@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: auto-apply-agent
+  labels:
+    app: jobbuddy
+    component: auto-apply-agent
+spec:
+  schedule: "*/30 * * * *"  # Every 30 minutes
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: auto-apply-agent
+            image: jobbuddy/auto-apply-agent:latest
+            env:
+            - name: BACKEND_URL
+              value: "http://backend:8000"
+            - name: AGENT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jobbuddy-secrets
+                  key: agent-secret-key
+            - name: LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jobbuddy-secrets
+                  key: openai-api-key
+            volumeMounts:
+            - name: screenshots
+              mountPath: /app/screenshots
+            - name: logs
+              mountPath: /app/logs
+          restartPolicy: OnFailure
+          volumes:
+          - name: screenshots
+            emptyDir: {}
+          - name: logs
+            emptyDir: {}

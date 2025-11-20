@@ -1,0 +1,5 @@
+# Requirements for JobBuddy Agents
+aiohttp==3.8.6
+beautifulsoup4==4.12.2
+playwright==1.39.0
+lxml==4.9.3

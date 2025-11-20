@@ -1,0 +1,56 @@
+John Doe
+Software Engineer
+
+Contact Information:
+Email: john.doe@example.com
+Phone: +1-555-123-4567
+LinkedIn: https://linkedin.com/in/johndoe
+GitHub: https://github.com/johndoe
+
+Professional Summary:
+Experienced software engineer with 5+ years of expertise in Python, JavaScript, and cloud technologies. Passionate about building scalable applications and mentoring junior developers.
+
+Skills:
+- Python
+- JavaScript
+- React
+- Node.js
+- Docker
+- AWS
+- PostgreSQL
+- Git
+- CI/CD
+
+Work Experience:
+
+Senior Software Engineer
+Tech Corp, San Francisco, CA
+January 2020 - Present
+- Led development of microservices architecture serving 1M+ users
+- Implemented CI/CD pipeline reducing deployment time by 60%
+- Mentored 5 junior developers and conducted technical interviews
+- Technologies: Python, Docker, AWS, PostgreSQL
+
+Software Engineer
+Startup Inc., New York, NY
+June 2018 - December 2019
+- Developed RESTful APIs for customer-facing applications
+- Optimized database queries improving response time by 40%
+- Collaborated with UX team to implement responsive web interfaces
+- Technologies: JavaScript, React, Node.js, MongoDB
+
+Education:
+
+B.S. Computer Science
+State University, Boston, MA
+September 2012 - May 2016
+- Graduated with honors
+- Relevant coursework: Data Structures, Algorithms, Database Systems
+
+Certifications:
+- AWS Certified Developer
+- Docker Certified Associate
+
+Languages:
+- English (Native)
+- Spanish (Intermediate)

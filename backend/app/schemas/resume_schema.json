@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Enhanced Resume Data Schema",
+  "description": "Schema for parsed resume data with confidence scoring and provenance tracking",
+  "properties": {
+    "resume_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Resume ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Candidate name"
+    },
+    "emails": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "email"
+      },
+      "description": "Email addresses"
+    },
+    "phones": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Phone numbers"
+    },
+    "urls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "URLs (websites, portfolios)"
+    },
+    "linkedin": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "LinkedIn profile URL"
+    },
+    "github": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "GitHub profile URL"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Professional summary"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "string",
+            "description": "The skill name"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for this skill extraction"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source of the skill extraction (e.g., 'exact_match', 'fuzzy_match')"
+          }
+        },
+        "required": ["skill", "confidence", "source"]
+      },
+      "description": "Extracted skills"
+    },
+    "experiences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "title": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "start_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Start date in ISO format (YYYY-MM-DD)"
+          },
+          "end_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "End date in ISO format (YYYY-MM-DD)"
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bullet points describing responsibilities"
+          },
+          "duration_months": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "description": "Duration in months"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for this experience extraction"
+          }
+        },
+        "required": ["company", "title", "confidence"]
+      },
+      "description": "Work experiences"
+    },
+    "education": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "type": "string",
+            "description": "Institution name"
+          },
+          "degree": {
+            "type": ["string", "null"],
+            "description": "Degree obtained"
+          },
+          "start_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Start date in ISO format (YYYY-MM-DD)"
+          },
+          "end_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "End date in ISO format (YYYY-MM-DD)"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score for this education extraction"
+          }
+        },
+        "required": ["institution", "confidence"]
+      },
+      "description": "Education history"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Certifications"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Languages"
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Locations"
+    },
+    "raw_text": {
+      "type": "string",
+      "description": "Raw extracted text"
+    },
+    "ocr_used": {
+      "type": "boolean",
+      "description": "Whether OCR was used for text extraction"
+    },
+    "parsing_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall parsing confidence"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when parsing was completed"
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Source of each extracted field",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "name",
+    "emails",
+    "phones",
+    "urls",
+    "summary",
+    "skills",
+    "experiences",
+    "education",
+    "certifications",
+    "languages",
+    "locations",
+    "raw_text",
+    "ocr_used",
+    "parsing_confidence",
+    "generated_at",
+    "provenance"
+  ]
+}

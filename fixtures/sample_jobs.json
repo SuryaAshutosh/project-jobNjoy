@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Senior Software Engineer",
+    "company": "TechCorp Inc.",
+    "location": "San Francisco, CA",
+    "description": "We are looking for a senior software engineer to join our team. You will be responsible for designing, developing, and maintaining our core products. The ideal candidate has experience with Python, JavaScript, and cloud technologies.",
+    "url": "https://techcorp.com/jobs/senior-software-engineer",
+    "salary": "$130,000 - $160,000",
+    "source_id": "techcorp_source",
+    "posted_date": "2023-06-15",
+    "application_deadline": "2023-07-15",
+    "job_type": "Full-time",
+    "remote_option": true,
+    "required_skills": ["Python", "JavaScript", "AWS", "Docker"],
+    "nice_to_have_skills": ["Kubernetes", "React", "Machine Learning"]
+  },
+  {
+    "title": "Frontend Developer",
+    "company": "WebSolutions LLC",
+    "location": "New York, NY",
+    "description": "Join our frontend team to build beautiful, responsive web applications. We use modern technologies like React, TypeScript, and GraphQL. Experience with UI/UX design principles is a plus.",
+    "url": "https://websolutions.com/jobs/frontend-developer",
+    "salary": "$100,000 - $130,000",
+    "source_id": "websolutions_source",
+    "posted_date": "2023-06-10",
+    "application_deadline": "2023-07-10",
+    "job_type": "Full-time",
+    "remote_option": true,
+    "required_skills": ["JavaScript", "React", "HTML/CSS", "TypeScript"],
+    "nice_to_have_skills": ["GraphQL", "Redux", "UI/UX Design"]
+  },
+  {
+    "title": "DevOps Engineer",
+    "company": "CloudFirst Systems",
+    "location": "Austin, TX",
+    "description": "Help us build and maintain our cloud infrastructure. You'll work with Kubernetes, Docker, AWS, and CI/CD pipelines. Experience with monitoring and alerting systems is essential.",
+    "url": "https://cloudfirst.com/jobs/devops-engineer",
+    "salary": "$120,000 - $150,000",
+    "source_id": "cloudfirst_source",
+    "posted_date": "2023-06-05",
+    "application_deadline": "2023-07-05",
+    "job_type": "Full-time",
+    "remote_option": true,
+    "required_skills": ["AWS", "Docker", "Kubernetes", "CI/CD"],
+    "nice_to_have_skills": ["Terraform", "Prometheus", "Grafana"]
+  }
+]

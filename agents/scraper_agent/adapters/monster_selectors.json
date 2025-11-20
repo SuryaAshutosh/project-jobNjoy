@@ -1,0 +1,28 @@
+{
+  "source": "monster",
+  "description": "Monster job search selectors",
+  "job_listings": {
+    "container": ".job-listing",
+    "job_card": ".job-listing",
+    "title": ".jobTitle, .title, h2.job-title",
+    "company": ".companyName, .company, .employer",
+    "location": ".jobLocation, .location, .job-location",
+    "link": "a[href*='/job/']",
+    "salary": ".salary, .pay, .compensation",
+    "posted_date": ".postedDate, .date, .timeago"
+  },
+  "pagination": {
+    "next_button": ".next, .pagination-next",
+    "page_numbers": ".pagination li"
+  },
+  "captcha": {
+    "indicators": [
+      "recaptcha",
+      "captcha",
+      "security check",
+      "verify you are human",
+      "are you a robot"
+    ]
+  },
+  "update_notes": "Monster uses multiple class names for similar elements. Update selectors if structure changes."
+}

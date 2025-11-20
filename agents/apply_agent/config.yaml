@@ -1,0 +1,107 @@
+# Auto-Apply Agent Configuration
+
+# Backend settings
+backend:
+  url: "http://localhost:8000"
+  agent_secret_key: "default-agent-secret"
+
+# Browser settings
+browser:
+  headless: true
+  slow_mo: 0
+  timeout: 30000
+  max_retries: 3
+  stealth: true
+
+# Proxy settings
+proxy:
+  enabled: false
+  urls: []
+  username: ""
+  password: ""
+
+# LLM settings
+llm:
+  provider: "openai"
+  model: "gpt-3.5-turbo"
+  api_key: ""
+  temperature: 0.7
+  max_tokens: 500
+
+# Site-specific overrides
+sites:
+  linkedin:
+    login_url: "https://www.linkedin.com/login"
+    form_selectors:
+      - "input[name='session_key']"
+      - "input[name='session_password']"
+    submit_selector: "button[type='submit']"
+    max_steps: 3
+
+  indeed:
+    login_url: "https://secure.indeed.com/account/login"
+    form_selectors:
+      - "input[name='email']"
+      - "input[name='password']"
+    submit_selector: "button[type='submit']"
+    max_steps: 2
+
+  naukri:
+    login_url: "https://www.naukri.com/nlogin/login"
+    form_selectors:
+      - "input[placeholder='Enter your active Email ID / Username']"
+      - "input[placeholder='Enter your password']"
+    submit_selector: "button[type='submit']"
+    max_steps: 2
+
+# Field mappings
+field_mappings:
+  name:
+    - "name"
+    - "full-name"
+    - "firstName"
+    - "lastName"
+  email:
+    - "email"
+    - "email-address"
+  phone:
+    - "phone"
+    - "telephone"
+    - "mobile"
+  location:
+    - "location"
+    - "city"
+    - "address"
+  current_company:
+    - "current-company"
+    - "current-employer"
+  current_title:
+    - "current-title"
+    - "current-position"
+  skills:
+    - "skills"
+  salary_expectations:
+    - "salary"
+    - "expected-salary"
+    - "compensation"
+
+# Logging settings
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "auto_apply_agent.log"
+
+# Retry settings
+retry:
+  max_attempts: 3
+  backoff_factor: 2
+  jitter: true
+
+# CAPTCHA settings
+captcha:
+  detection_keywords:
+    - "recaptcha"
+    - "captcha"
+    - "security check"
+    - "verify you are human"
+  manual_review_required: true

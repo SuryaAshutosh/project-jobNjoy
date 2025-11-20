@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  auto-apply-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auto-apply-agent
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - AGENT_SECRET_KEY=your-agent-secret-key
+      - LLM_API_KEY=your-openai-api-key
+    volumes:
+      - ./screenshots:/app/screenshots
+      - ./logs:/app/logs
+    networks:
+      - jobbuddy-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  jobbuddy-network:
+    external: true

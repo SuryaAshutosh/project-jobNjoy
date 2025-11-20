@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  job-scraper-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: job-scraper-agent
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - SCRAPER_API_KEY=your-scraper-api-key
+      - LOG_LEVEL=INFO
+    networks:
+      - jobbuddy-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  jobbuddy-network:
+    external: true

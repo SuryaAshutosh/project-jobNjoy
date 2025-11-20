@@ -1,0 +1,28 @@
+{
+  "source": "linkedin",
+  "description": "LinkedIn job search selectors",
+  "job_listings": {
+    "container": ".jobs-search-results-list",
+    "job_card": ".job-card-container",
+    "title": ".job-card-list__title",
+    "company": ".job-card-container__company-name",
+    "location": ".job-card-container__metadata-item",
+    "link": "a.job-card-container__link",
+    "description": ".jobs-description-content",
+    "salary": ".salary-compensation__salary",
+    "posted_date": ".jobs-unified-top-card__posted-date"
+  },
+  "pagination": {
+    "next_button": ".artdeco-pagination__button--next",
+    "page_numbers": ".artdeco-pagination__pages li"
+  },
+  "captcha": {
+    "indicators": [
+      "recaptcha",
+      "captcha",
+      "security check",
+      "verify you are human"
+    ]
+  },
+  "update_notes": "Selectors may change periodically. Check LinkedIn's job search page for updates."
+}

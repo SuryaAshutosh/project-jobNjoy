@@ -1,0 +1,30 @@
+{
+  "source": "naukri",
+  "description": "Naukri job search selectors (India-focused)",
+  "job_listings": {
+    "container": ".jobTuple",
+    "job_card": ".jobTuple",
+    "title": ".title, .jobTitle",
+    "company": ".company, .org",
+    "location": ".location, .loc",
+    "link": "a",
+    "description": ".job-desc, .job-description, .dDesc",
+    "salary": ".salary, .sal",
+    "experience": ".experience, .exp",
+    "posted_date": ".date, .time"
+  },
+  "pagination": {
+    "next_button": ".fright, .pagination > a:last-child",
+    "page_numbers": ".pagination a"
+  },
+  "captcha": {
+    "indicators": [
+      "recaptcha",
+      "captcha",
+      "security check",
+      "verify you are human",
+      "human verification"
+    ]
+  },
+  "update_notes": "Naukri frequently updates their UI. Check job search pages for current selectors."
+}
