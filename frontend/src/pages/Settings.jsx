@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUser } from '@/hooks/useUser';
 
 const Settings = () => {
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('john.doe@example.com');
+  const { user } = useAuth();
+  const { updateUserProfile, loading } = useUser();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
     push: true
   });
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
   
+  // Initialize form with current user data
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+    }
+  }, [user]);
+
   const handleNotificationChange = (type) => {
     setNotifications(prev => ({
       ...prev,
@@ -16,10 +30,17 @@ const Settings = () => {
     }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, this would save the settings
-    alert('Settings saved!');
+    setSuccess('');
+    setError('');
+    
+    try {
+      await updateUserProfile({ name, email });
+      setSuccess('Settings saved successfully!');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to save settings');
+    }
   };
 
   return (
@@ -30,6 +51,32 @@ const Settings = () => {
           Manage your account settings and preferences
         </p>
       </div>
+      
+      {success && (
+        <div style={{ 
+          marginBottom: '1rem', 
+          padding: '1rem', 
+          backgroundColor: '#f0fdf4', 
+          border: '1px solid #bbf7d0', 
+          borderRadius: '0.375rem', 
+          color: '#166534' 
+        }}>
+          {success}
+        </div>
+      )}
+      
+      {error && (
+        <div style={{ 
+          marginBottom: '1rem', 
+          padding: '1rem', 
+          backgroundColor: '#fee', 
+          border: '1px solid #fecaca', 
+          borderRadius: '0.375rem', 
+          color: '#c53030' 
+        }}>
+          Error: {error}
+        </div>
+      )}
       
       <div style={{ 
         display: 'grid', 
@@ -105,17 +152,18 @@ const Settings = () => {
             
             <button
               type="submit"
+              disabled={loading}
               style={{
-                backgroundColor: '#2563eb',
+                backgroundColor: loading ? '#9ca3af' : '#2563eb',
                 color: 'white',
                 padding: '0.5rem 1rem',
                 borderRadius: '0.375rem',
                 border: 'none',
                 fontWeight: '500',
-                cursor: 'pointer'
+                cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              Save Changes
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </form>
         </div>
@@ -266,65 +314,6 @@ const Settings = () => {
                 </span>
               </label>
             </div>
-          </div>
-        </div>
-        
-        <div style={{ 
-          border: '1px solid #e5e7eb', 
-          borderRadius: '0.5rem', 
-          padding: '1.5rem', 
-          backgroundColor: 'white',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-        }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
-            Account Security
-          </h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <button
-              style={{
-                textAlign: 'left',
-                backgroundColor: 'white',
-                color: '#374151',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.375rem',
-                border: '1px solid #d1d5db',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Change Password
-            </button>
-            
-            <button
-              style={{
-                textAlign: 'left',
-                backgroundColor: 'white',
-                color: '#374151',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.375rem',
-                border: '1px solid #d1d5db',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Two-Factor Authentication
-            </button>
-            
-            <button
-              style={{
-                textAlign: 'left',
-                backgroundColor: '#fef2f2',
-                color: '#b91c1c',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.375rem',
-                border: '1px solid #fecaca',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Delete Account
-            </button>
           </div>
         </div>
       </div>

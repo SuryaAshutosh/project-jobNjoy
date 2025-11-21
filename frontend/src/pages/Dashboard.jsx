@@ -1,29 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useDashboardStats, useChartData, useTopCompanies, useRecentActivity } from '@/hooks/useDashboard';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    jobsScraped: 1247,
-    applicationsSubmitted: 86,
-    successRate: 23,
-    activeSubscriptions: 1
-  });
-  
-  const [chartData, setChartData] = useState([
-    { name: 'Jan', applications: 12 },
-    { name: 'Feb', applications: 19 },
-    { name: 'Mar', applications: 15 },
-    { name: 'Apr', applications: 22 },
-    { name: 'May', applications: 18 },
-    { name: 'Jun', applications: 25 }
-  ]);
-  
-  const [topCompanies, setTopCompanies] = useState([
-    { company: 'Google', positions: 12 },
-    { company: 'Microsoft', positions: 8 },
-    { company: 'Amazon', positions: 7 },
-    { company: 'Apple', positions: 6 },
-    { company: 'Meta', positions: 5 }
-  ]);
+  const { stats, loading: statsLoading } = useDashboardStats();
+  const { chartData, loading: chartLoading } = useChartData();
+  const { topCompanies, loading: companiesLoading } = useTopCompanies();
+  const { activities, loading: activitiesLoading } = useRecentActivity();
 
   return (
     <div>
@@ -76,7 +58,11 @@ const Dashboard = () => {
             </div>
             <h3 style={{ fontWeight: '500', color: '#6b7280' }}>Jobs Scraped</h3>
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.jobsScraped.toLocaleString()}</p>
+          {statsLoading ? (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>Loading...</p>
+          ) : (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.jobsScraped.toLocaleString()}</p>
+          )}
         </div>
         
         <div style={{ 
@@ -115,7 +101,11 @@ const Dashboard = () => {
             </div>
             <h3 style={{ fontWeight: '500', color: '#6b7280' }}>Applications</h3>
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.applicationsSubmitted}</p>
+          {statsLoading ? (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>Loading...</p>
+          ) : (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.applicationsSubmitted}</p>
+          )}
         </div>
         
         <div style={{ 
@@ -151,7 +141,11 @@ const Dashboard = () => {
             </div>
             <h3 style={{ fontWeight: '500', color: '#6b7280' }}>Success Rate</h3>
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.successRate}%</p>
+          {statsLoading ? (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>Loading...</p>
+          ) : (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.successRate}%</p>
+          )}
         </div>
         
         <div style={{ 
@@ -189,7 +183,11 @@ const Dashboard = () => {
             </div>
             <h3 style={{ fontWeight: '500', color: '#6b7280' }}>Subscriptions</h3>
           </div>
-          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.activeSubscriptions}</p>
+          {statsLoading ? (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>Loading...</p>
+          ) : (
+            <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>{stats.activeSubscriptions}</p>
+          )}
         </div>
       </div>
       
@@ -210,31 +208,37 @@ const Dashboard = () => {
             Applications Over Time
           </h2>
           
-          <div style={{ 
-            height: '300px', 
-            display: 'flex', 
-            alignItems: 'flex-end', 
-            gap: '0.5rem',
-            padding: '1rem 0'
-          }}>
-            {chartData.map((item, index) => (
-              <div key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div
-                  style={{
-                    width: '100%',
-                    backgroundColor: '#3b82f6',
-                    borderRadius: '0.25rem',
-                    height: `${(item.applications / 30) * 100}%`,
-                    minHeight: '4px',
-                    transition: 'height 0.3s ease'
-                  }}
-                ></div>
-                <span style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#6b7280' }}>
-                  {item.name}
-                </span>
-              </div>
-            ))}
-          </div>
+          {chartLoading ? (
+            <div style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <p>Loading chart data...</p>
+            </div>
+          ) : (
+            <div style={{ 
+              height: '300px', 
+              display: 'flex', 
+              alignItems: 'flex-end', 
+              gap: '0.5rem',
+              padding: '1rem 0'
+            }}>
+              {chartData.map((item, index) => (
+                <div key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#3b82f6',
+                      borderRadius: '0.25rem',
+                      height: `${(item.applications / 30) * 100}%`,
+                      minHeight: '4px',
+                      transition: 'height 0.3s ease'
+                    }}
+                  ></div>
+                  <span style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#6b7280' }}>
+                    {item.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         
         <div style={{ 
@@ -248,24 +252,30 @@ const Dashboard = () => {
             Top Companies Hiring
           </h2>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {topCompanies.map((company, index) => (
-              <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: '500' }}>{company.company}</span>
-                <span 
-                  style={{ 
-                    backgroundColor: '#eff6ff', 
-                    color: '#1d4ed8', 
-                    padding: '0.25rem 0.5rem', 
-                    borderRadius: '0.375rem', 
-                    fontSize: '0.75rem' 
-                  }}
-                >
-                  {company.positions} positions
-                </span>
-              </div>
-            ))}
-          </div>
+          {companiesLoading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p>Loading companies...</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {topCompanies.map((company, index) => (
+                <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontWeight: '500' }}>{company.company}</span>
+                  <span 
+                    style={{ 
+                      backgroundColor: '#eff6ff', 
+                      color: '#1d4ed8', 
+                      padding: '0.25rem 0.5rem', 
+                      borderRadius: '0.375rem', 
+                      fontSize: '0.75rem' 
+                    }}
+                  >
+                    {company.positions} positions
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       
@@ -280,49 +290,34 @@ const Dashboard = () => {
           Recent Activity
         </h2>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              backgroundColor: '#10b981',
-              marginRight: '0.75rem'
-            }}></div>
-            <div>
-              <p style={{ fontWeight: '500' }}>Application submitted for Senior Software Engineer at Google</p>
-              <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>2 hours ago</p>
-            </div>
+        {activitiesLoading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <p>Loading activities...</p>
           </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              backgroundColor: '#3b82f6',
-              marginRight: '0.75rem'
-            }}></div>
-            <div>
-              <p style={{ fontWeight: '500' }}>Resume parsed successfully</p>
-              <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>1 day ago</p>
-            </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {activities.map((activity, index) => (
+              <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ 
+                  width: '8px', 
+                  height: '8px', 
+                  borderRadius: '50%', 
+                  backgroundColor: activity.status === 'applied' ? '#10b981' : activity.status === 'interview' ? '#3b82f6' : '#f59e0b',
+                  marginRight: '0.75rem'
+                }}></div>
+                <div>
+                  <p style={{ fontWeight: '500' }}>
+                    {activity.status === 'applied' ? 'Application submitted for ' : ''}
+                    {activity.title} at {activity.company}
+                  </p>
+                  <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                    {new Date(activity.timestamp).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              backgroundColor: '#f59e0b',
-              marginRight: '0.75rem'
-            }}></div>
-            <div>
-              <p style={{ fontWeight: '500' }}>Interview scheduled with Microsoft</p>
-              <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>3 days ago</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

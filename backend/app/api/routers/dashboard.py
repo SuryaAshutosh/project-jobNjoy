@@ -48,7 +48,8 @@ async def get_dashboard_stats(
         "applied_success": applied_count,
         "pending_applications": pending_count,
         "failed_applications": failed_count,
-        "user_subscription_status": subscription_status
+        "user_subscription_status": subscription_status,
+        "success_rate": round((applied_count / len(user_applications) * 100) if user_applications else 0, 2)
     }
     
     return stats
@@ -79,9 +80,21 @@ async def get_applications_chart_data(
         status = app.status
         status_counts[status] = status_counts.get(status, 0) + 1
     
+    # Also get applications by date for timeline chart
+    applications_by_date = {}
+    for app in user_applications:
+        date_str = app.created_at.strftime("%Y-%m-%d")
+        applications_by_date[date_str] = applications_by_date.get(date_str, 0) + 1
+    
     chart_data = {
-        "labels": list(status_counts.keys()),
-        "data": list(status_counts.values())
+        "by_status": {
+            "labels": list(status_counts.keys()),
+            "data": list(status_counts.values())
+        },
+        "by_date": {
+            "labels": list(applications_by_date.keys()),
+            "data": list(applications_by_date.values())
+        }
     }
     
     return chart_data
@@ -116,11 +129,13 @@ async def get_recent_activity(
         job = db.query(Job).filter(Job.id == app.job_id).first()
         
         activity.append({
+            "id": str(app.id),
             "type": "application",
             "status": app.status,
             "job_title": job.title if job else "Unknown",
             "company": job.company if job else "Unknown",
-            "timestamp": app.created_at.isoformat()
+            "timestamp": app.created_at.isoformat(),
+            "applied_at": app.applied_at.isoformat() if app.applied_at else None
         })
     
     return {"activity": activity}

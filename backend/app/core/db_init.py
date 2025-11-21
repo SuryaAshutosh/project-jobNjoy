@@ -6,13 +6,11 @@ Creates all tables and provides utility functions for database setup
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from ..models.db_models import Base
+from .config import settings
 import os
 
 # Database connection configuration
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "postgresql://jobbuddy_user:jobbuddy_pass@localhost:5432/jobbuddy_db"
-)
+DATABASE_URL = settings.DATABASE_URL
 
 def create_database_tables():
     """Create all database tables"""

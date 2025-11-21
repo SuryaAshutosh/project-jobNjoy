@@ -4,7 +4,7 @@ A production-ready job scraping agent that discovers job postings from multiple 
 
 ## Features
 
-- **Multi-source Support**: Scrapes jobs from LinkedIn, Adzuna, Monster, Naukri, and more
+- **Multi-source Support**: Scrapes jobs from LinkedIn, Adzuna, Monster, Naukri, Jooble, Greenhouse, Lever, Workable, and more
 - **Modular Adapters**: Per-source adapters with API and scraping fallbacks
 - **Data Normalization**: Standardizes job data from different sources
 - **Deduplication**: Removes duplicate listings using exact and fuzzy matching
@@ -22,7 +22,11 @@ scraper_agent/
 │   ├── linkedin.py     # LinkedIn scraping adapter
 │   ├── adzuna.py       # Adzuna API adapter
 │   ├── monster.py      # Monster scraping adapter
-│   └── naukri.py       # Naukri scraping adapter
+│   ├── naukri.py       # Naukri scraping adapter
+│   ├── jooble.py       # Jooble API adapter
+│   ├── greenhouse.py   # Greenhouse API adapter
+│   ├── lever.py        # Lever API adapter
+│   └── workable.py     # Workable API adapter
 ├── utils/              # Utility modules
 │   ├── normalizer.py   # Data normalization
 │   ├── deduplicator.py # Duplicate detection
@@ -34,7 +38,7 @@ scraper_agent/
 ├── requirements.txt    # Dependencies
 ├── Dockerfile          # Containerization
 └── tests/              # Unit tests
-    └── test_scraper.py
+   └── test_scraper.py
 ```
 
 ## Supported Sources
@@ -43,6 +47,10 @@ scraper_agent/
 2. **Adzuna** - Official API integration
 3. **Monster** - Web scraping with Playwright
 4. **Naukri** - Web scraping with Playwright (India-focused)
+5. **Jooble** - Official API integration
+6. **Greenhouse** - Official API integration for company career pages
+7. **Lever** - Official API integration for company career pages
+8. **Workable** - Official API integration for company career pages
 
 ## Installation
 
@@ -76,7 +84,7 @@ SOURCES_CONFIG = [
             "page_limit": 3
         }
     },
-    # ... more sources
+    // ... more sources
 ]
 ```
 

@@ -1,54 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useApplications } from '@/hooks/useApplications';
 
 const Applications = () => {
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { applications, loading, error } = useApplications();
   
-  // Mock application data
-  const mockApplications = [
-    {
-      id: 1,
-      jobTitle: 'Senior Software Engineer',
-      company: 'Tech Corp',
-      appliedAt: '2023-06-15',
-      status: 'Submitted',
-      source: 'LinkedIn'
-    },
-    {
-      id: 2,
-      jobTitle: 'Product Manager',
-      company: 'Innovate Inc',
-      appliedAt: '2023-06-10',
-      status: 'Interview Scheduled',
-      source: 'Company Website'
-    },
-    {
-      id: 3,
-      jobTitle: 'UX Designer',
-      company: 'Design Studio',
-      appliedAt: '2023-06-05',
-      status: 'Rejected',
-      source: 'Job Board'
-    }
-  ];
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setApplications(mockApplications);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Submitted':
+      case 'applied':
         return '#3b82f6'; // blue
-      case 'Interview Scheduled':
+      case 'interview_scheduled':
         return '#10b981'; // green
-      case 'Rejected':
+      case 'rejected':
         return '#ef4444'; // red
-      case 'Offer Received':
+      case 'offer_received':
         return '#8b5cf6'; // purple
       default:
         return '#6b7280'; // gray
@@ -64,6 +28,10 @@ const Applications = () => {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <p>Loading applications...</p>
+        </div>
+      ) : error ? (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p>Error loading applications: {error.message}</p>
         </div>
       ) : (
         <div>
@@ -85,11 +53,11 @@ const Applications = () => {
               >
                 <div style={{ marginBottom: '1rem' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.25rem' }}>
-                    {app.jobTitle}
+                    {app.job?.title || 'Unknown Position'}
                   </h2>
-                  <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>{app.company}</p>
+                  <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>{app.job?.company || 'Unknown Company'}</p>
                   <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                    Applied on {new Date(app.appliedAt).toLocaleDateString()}
+                    Applied on {new Date(app.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 
@@ -104,10 +72,10 @@ const Applications = () => {
                       backgroundColor: getStatusColor(app.status)
                     }}
                   >
-                    {app.status}
+                    {app.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                   <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                    via {app.source}
+                    via {app.source || 'Unknown'}
                   </span>
                 </div>
                 

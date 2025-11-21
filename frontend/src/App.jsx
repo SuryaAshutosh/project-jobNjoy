@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Jobs from './pages/Jobs';
+import RealTimeJobs from './pages/RealTimeJobs';
 import JobDetails from './pages/JobDetails';
 import Applications from './pages/Applications';
 import UploadResume from './pages/UploadResume';
@@ -30,6 +31,7 @@ const App = () => {
                   <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path="/jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
+                  <Route path="/jobs/real-time" element={<ProtectedRoute><RealTimeJobs /></ProtectedRoute>} />
                   <Route path="/jobs/:id" element={<ProtectedRoute><JobDetails /></ProtectedRoute>} />
                   <Route path="/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
                   <Route path="/resume/upload" element={<ProtectedRoute><UploadResume /></ProtectedRoute>} />

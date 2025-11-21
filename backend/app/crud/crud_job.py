@@ -13,9 +13,35 @@ def get_job(db: Session, job_id: UUID):
     """Get a job by ID"""
     return db.query(Job).filter(Job.id == job_id).first()
 
+def get_job_with_source(db: Session, job_id: UUID):
+    """Get a job by ID with source information"""
+    return db.query(Job).filter(Job.id == job_id).first()
+
 def get_jobs(db: Session, skip: int = 0, limit: int = 100, keyword: str = None, location: str = None, source_id: UUID = None, skill: str = None):
     """Get jobs with filtering and pagination"""
     query = db.query(Job)
+    
+    if keyword:
+        query = query.filter(
+            Job.title.ilike(f"%{keyword}%") | 
+            Job.description.ilike(f"%{keyword}%") | 
+            Job.company.ilike(f"%{keyword}%")
+        )
+    
+    if location:
+        query = query.filter(Job.location.ilike(f"%{location}%"))
+    
+    if source_id:
+        query = query.filter(Job.source_id == source_id)
+    
+    if skill:
+        query = query.filter(Job.skills.contains([skill]))
+    
+    return query.offset(skip).limit(limit).all()
+
+def get_jobs_with_sources(db: Session, skip: int = 0, limit: int = 100, keyword: str = None, location: str = None, source_id: UUID = None, skill: str = None):
+    """Get jobs with filtering and pagination, including source information"""
+    query = db.query(Job).join(JobSource)
     
     if keyword:
         query = query.filter(

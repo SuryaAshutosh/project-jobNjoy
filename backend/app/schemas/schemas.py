@@ -96,6 +96,8 @@ class JobResponse(JobBase):
     id: UUID
     source_id: UUID
     created_at: datetime
+    # Adding relationship data for better frontend integration
+    source: Optional[JobSourceResponse] = None
 
     class Config:
         orm_mode = True
@@ -117,6 +119,8 @@ class ApplicationResponse(ApplicationBase):
     user_id: UUID
     applied_at: Optional[datetime] = None
     created_at: datetime
+    # Adding relationship data for better frontend integration
+    job: Optional[JobResponse] = None
 
     class Config:
         orm_mode = True
