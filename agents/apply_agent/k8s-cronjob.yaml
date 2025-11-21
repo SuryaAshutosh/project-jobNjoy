@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: auto-apply-agent
   labels:
-    app: jobbuddy
+    app: jobsee
     component: auto-apply-agent
 spec:
   schedule: "*/30 * * * *"  # Every 30 minutes
@@ -15,19 +15,19 @@ spec:
         spec:
           containers:
           - name: auto-apply-agent
-            image: jobbuddy/auto-apply-agent:latest
+            image: jobsee/auto-apply-agent:latest
             env:
             - name: BACKEND_URL
               value: "http://backend:8000"
             - name: AGENT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: jobbuddy-secrets
+                  name: jobsee-secrets
                   key: agent-secret-key
             - name: LLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: jobbuddy-secrets
+                  name: jobsee-secrets
                   key: openai-api-key
             volumeMounts:
             - name: screenshots

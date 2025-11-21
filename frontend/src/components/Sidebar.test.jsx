@@ -19,7 +19,7 @@ describe('Sidebar', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText('JobCopilot')).toBeInTheDocument();
+    expect(screen.getByText('jobSee')).toBeInTheDocument();
   });
 
   test('renders navigation items', () => {

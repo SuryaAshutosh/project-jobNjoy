@@ -33,7 +33,7 @@ const Header = () => {
           color: '#2563eb',
           textDecoration: 'none'
         }}>
-          JobCopilot
+          jobSee
         </Link>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

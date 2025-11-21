@@ -1,5 +1,5 @@
 """
-Custom exception handlers for JobBuddy
+Custom exception handlers for jobSee
 """
 
 from fastapi import HTTPException, Request
@@ -8,49 +8,49 @@ from typing import Dict, Any
 import logging
 
 # Set up logger
-logger = logging.getLogger("jobbuddy")
+logger = logging.getLogger("jobsee")
 
-class JobBuddyException(Exception):
-    """Base exception class for JobBuddy"""
+class JobSeeException(Exception):
+    """Base exception class for jobSee"""
     def __init__(self, message: str, status_code: int = 500):
         self.message = message
         self.status_code = status_code
         super().__init__(self.message)
 
-class UserNotFoundException(JobBuddyException):
+class UserNotFoundException(JobSeeException):
     """Raised when a user is not found"""
     def __init__(self, user_id: str):
         super().__init__(f"User with ID {user_id} not found", 404)
 
-class UnauthorizedException(JobBuddyException):
+class UnauthorizedException(JobSeeException):
     """Raised when a user is not authorized"""
     def __init__(self, message: str = "Unauthorized"):
         super().__init__(message, 401)
 
-class ForbiddenException(JobBuddyException):
+class ForbiddenException(JobSeeException):
     """Raised when access is forbidden"""
     def __init__(self, message: str = "Forbidden"):
         super().__init__(message, 403)
 
-class InvalidCredentialsException(JobBuddyException):
+class InvalidCredentialsException(JobSeeException):
     """Raised when credentials are invalid"""
     def __init__(self):
         super().__init__("Invalid credentials", 401)
 
-class FileTooLargeException(JobBuddyException):
+class FileTooLargeException(JobSeeException):
     """Raised when an uploaded file is too large"""
     def __init__(self, max_size: int):
         super().__init__(f"File too large. Maximum size is {max_size} bytes", 400)
 
-class InvalidFileTypeException(JobBuddyException):
+class InvalidFileTypeException(JobSeeException):
     """Raised when an uploaded file has an invalid type"""
     def __init__(self, allowed_types: list):
         super().__init__(f"Invalid file type. Allowed types: {', '.join(allowed_types)}", 400)
 
 # Exception handlers
-async def jobbuddy_exception_handler(request: Request, exc: JobBuddyException):
-    """Handle JobBuddy custom exceptions"""
-    logger.error(f"JobBuddy exception: {exc.message}", extra={
+async def jobsee_exception_handler(request: Request, exc: JobSeeException):
+    """Handle jobSee custom exceptions"""
+    logger.error(f"jobSee exception: {exc.message}", extra={
         "status_code": exc.status_code,
         "path": request.url.path,
         "method": request.method
@@ -102,7 +102,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 # Exception handler registration
 exception_handlers = {
-    JobBuddyException: jobbuddy_exception_handler,
+    JobSeeException: jobsee_exception_handler,
     HTTPException: http_exception_handler,
     Exception: general_exception_handler,
 }

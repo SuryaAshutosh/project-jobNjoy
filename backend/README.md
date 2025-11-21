@@ -51,7 +51,7 @@ Create a `.env` file in the backend directory with the following variables:
 
 ```bash
 # Database
-DATABASE_URL=postgresql://jobbuddy:jobbuddy_pass@localhost:5432/jobbuddy
+DATABASE_URL=postgresql://jobsee:jobsee_pass@localhost:5432/jobsee
 
 # Security
 SECRET_KEY=your-super-secret-key-here-change-in-production
@@ -68,7 +68,7 @@ STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret
 S3_ENDPOINT_URL=http://localhost:9000
 S3_ACCESS_KEY_ID=minioadmin
 S3_SECRET_ACCESS_KEY=minioadmin
-S3_BUCKET_NAME=jobbuddy-resumes
+S3_BUCKET_NAME=jobsee-resumes
 
 # Agent Communication
 AGENT_SECRET_KEY=your-agent-secret-key-here-change-in-production
@@ -193,10 +193,10 @@ celery -A app.core.tasks.celery_app beat --loglevel=info
 
 ```bash
 # Build the Docker image
-docker build -t jobbuddy .
+docker build -t jobsee .
 
 # Run the container
-docker run -p 8000:8000 jobbuddy
+docker run -p 8000:8000 jobsee
 ```
 
 ### Production Considerations

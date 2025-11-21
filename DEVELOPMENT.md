@@ -178,7 +178,7 @@ docker-compose logs <service-name>
 docker-compose restart <service-name>
 
 # Access database shell
-docker-compose exec db psql -U jobbuddy jobbuddy
+docker-compose exec db psql -U jobsee jobsee
 
 # Access backend shell
 docker-compose exec backend bash
@@ -210,4 +210,4 @@ docker-compose exec frontend sh
 - Use HTTPS in production
 - Implement proper authentication and authorization
 
-This guide should help you get started with developing JobBuddy. For any questions or issues, please refer to the architecture documentation or reach out to the team.
+This guide should help you get started with developing jobSee. For any questions or issues, please refer to the architecture documentation or reach out to the team.

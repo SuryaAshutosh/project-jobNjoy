@@ -17,7 +17,7 @@ describe('Login', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText('Login to JobCopilot')).toBeInTheDocument();
+    expect(screen.getByText('Login to jobSee')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
   });

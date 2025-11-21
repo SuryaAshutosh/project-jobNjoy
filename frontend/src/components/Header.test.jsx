@@ -26,7 +26,7 @@ describe('Header', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText('JobCopilot')).toBeInTheDocument();
+    expect(screen.getByText('jobSee')).toBeInTheDocument();
   });
 
   test('renders search input', () => {

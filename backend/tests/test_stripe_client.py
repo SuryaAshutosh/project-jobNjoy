@@ -56,7 +56,7 @@ class TestStripeClient:
             name=mock_user.name,
             metadata={
                 "user_id": str(mock_user.id),
-                "created_via": "jobbuddy_platform"
+                "created_via": "jobsee_platform"
             }
         )
         mock_get_billing.assert_called_once_with(mock_db, mock_user.id)

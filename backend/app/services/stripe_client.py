@@ -102,7 +102,7 @@ class StripeClient:
                 name=user.name,
                 metadata={
                     "user_id": str(user.id),
-                    "created_via": "jobbuddy_platform"
+                    "created_via": "jobsee_platform"
                 }
             )
             

@@ -2,28 +2,28 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: jobbuddy
+  name: jobsee
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jobbuddy-config
-  namespace: jobbuddy
+  name: jobsee-config
+  namespace: jobsee
 data:
-  POSTGRES_DB: "jobbuddy"
-  POSTGRES_USER: "jobbuddy"
+  POSTGRES_DB: "jobsee"
+  POSTGRES_USER: "jobsee"
   REDIS_URL: "redis://redis-service:6379/0"
 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: jobbuddy-secrets
-  namespace: jobbuddy
+  name: jobsee-secrets
+  namespace: jobsee
 type: Opaque
 data:
-  POSTGRES_PASSWORD: am9iYnVkeQ==  # base64 encoded "jobbuddy"
+  POSTGRES_PASSWORD: am9ic2Vl  # base64 encoded "jobsee"
   SECRET_KEY: eW91ci1zZWNyZXQta2V5LWhlcmU=  # base64 encoded "your-secret-key-here"
 
 ---
@@ -31,7 +31,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres-deployment
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   replicas: 1
   selector:
@@ -51,17 +51,17 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: jobbuddy-config
+              name: jobsee-config
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
-              name: jobbuddy-config
+              name: jobsee-config
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: jobbuddy-secrets
+              name: jobsee-secrets
               key: POSTGRES_PASSWORD
         volumeMounts:
         - name: postgres-storage
@@ -76,7 +76,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres-service
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   selector:
     app: postgres
@@ -90,7 +90,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-deployment
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   replicas: 1
   selector:
@@ -112,7 +112,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis-service
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   selector:
     app: redis
@@ -126,7 +126,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   replicas: 2
   selector:
@@ -139,21 +139,21 @@ spec:
     spec:
       containers:
       - name: backend
-        image: jobbuddy/backend:latest
+        image: jobsee/backend:latest
         ports:
         - containerPort: 8000
         env:
         - name: DATABASE_URL
-          value: "postgresql://jobbuddy:jobbuddy@postgres-service:5432/jobbuddy"
+          value: "postgresql://jobsee:jobsee@postgres-service:5432/jobsee"
         - name: REDIS_URL
           valueFrom:
             configMapKeyRef:
-              name: jobbuddy-config
+              name: jobsee-config
               key: REDIS_URL
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: jobbuddy-secrets
+              name: jobsee-secrets
               key: SECRET_KEY
         readinessProbe:
           httpGet:
@@ -173,7 +173,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   selector:
     app: backend
@@ -188,7 +188,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   replicas: 2
   selector:
@@ -201,7 +201,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jobbuddy/frontend:latest
+        image: jobsee/frontend:latest
         ports:
         - containerPort: 80
 
@@ -210,7 +210,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend-service
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   selector:
     app: frontend
@@ -224,13 +224,13 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jobbuddy-ingress
-  namespace: jobbuddy
+  name: jobsee-ingress
+  namespace: jobsee
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: jobbuddy.local
+  - host: jobsee.local
     http:
       paths:
       - path: /
@@ -260,7 +260,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: jobbuddy
+  namespace: jobsee
 spec:
   accessModes:
     - ReadWriteOnce
