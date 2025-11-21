@@ -11,10 +11,10 @@ class Settings(BaseSettings):
     
     # Database
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "jobbuddy")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "jobbuddy")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "jobbuddy")
-    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "jobbuddy_user")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "jobbuddy_pass")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "jobbuddy_db")
+    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:5432/{POSTGRES_DB}"
     
     # Redis
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")

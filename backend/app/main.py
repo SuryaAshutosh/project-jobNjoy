@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, resume, jobs, applications, agents, payments, dashboard
+from app.api import auth, resume, jobs, applications, agents, payments, dashboard, websocket
 from app.core.config import settings
 from app.core.db_init import create_database_tables
 from app.core.exceptions import exception_handlers

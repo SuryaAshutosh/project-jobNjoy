@@ -51,3 +51,19 @@ def update_user_subscription(db: Session, user_id: str, subscription_status: str
         db.commit()
         db.refresh(db_user)
     return db_user
+
+def update_user(db: Session, user_id: str, user_update):
+    """Update user profile information"""
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        if hasattr(user_update, 'name') and user_update.name:
+            db_user.name = user_update.name
+        if hasattr(user_update, 'email') and user_update.email:
+            # Check if email is already taken by another user
+            existing_user = get_user_by_email(db, user_update.email)
+            if existing_user and existing_user.id != user_id:
+                raise ValueError("Email already registered")
+            db_user.email = user_update.email
+        db.commit()
+        db.refresh(db_user)
+    return db_user

@@ -1,5 +1,5 @@
 # API Routers Package
-from .routers import auth, resume, jobs, applications, agents, payments, dashboard
+from .routers import auth, resume, jobs, applications, agents, payments, dashboard, websocket
 
 __all__ = [
     "auth",
@@ -8,5 +8,6 @@ __all__ = [
     "applications",
     "agents",
     "payments",
-    "dashboard"
+    "dashboard",
+    "websocket"
 ]

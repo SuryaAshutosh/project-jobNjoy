@@ -138,7 +138,7 @@ async def list_applications(
     Returns:
         List[ApplicationResponse]: List of applications
     """
-    applications = get_applications_by_user(db, current_user.id, skip, limit)
+    applications = get_applications_by_user_with_jobs(db, current_user.id, skip, limit)
     return applications
 
 @router.get("/{application_id}", response_model=ApplicationResponse)
@@ -158,7 +158,7 @@ async def get_application_by_id(
     Returns:
         ApplicationResponse: The requested application
     """
-    db_application = get_application(db, application_id)
+    db_application = get_application_with_job(db, application_id)
     if not db_application:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

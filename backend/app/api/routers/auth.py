@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app.schemas.schemas import UserCreate, UserResponse, UserLogin
-from app.crud.crud_user import create_user, get_user_by_email
+from app.crud.crud_user import create_user, get_user_by_email, update_user
 from app.core.auth import authenticate_user, create_access_token, get_current_active_user
 from app.core.config import settings
 
@@ -92,3 +92,34 @@ async def read_users_me(current_user = Depends(get_current_active_user)):
         UserResponse: Current user profile
     """
     return current_user
+
+@router.put("/me", response_model=UserResponse)
+async def update_user_profile(
+    user_update: UserCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_active_user)
+):
+    """
+    Update current user profile
+    
+    Args:
+        user_update: User profile update data
+        db: Database session
+        current_user: Current authenticated user
+        
+    Returns:
+        UserResponse: Updated user profile
+    """
+    try:
+        updated_user = update_user(db, str(current_user.id), user_update)
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return updated_user
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )

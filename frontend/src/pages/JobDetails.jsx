@@ -1,72 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useJob } from '@/hooks/useJob';
 
 const JobDetails = () => {
   const { id } = useParams();
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  // Mock job data
-  const mockJob = {
-    id: id,
-    title: 'Senior Software Engineer',
-    company: 'Tech Corp',
-    location: 'San Francisco, CA',
-    salary: '$120,000 - $150,000',
-    posted: '2023-06-15',
-    skills: ['React', 'Node.js', 'Python', 'AWS', 'Docker'],
-    description: `
-      <p>We are looking for a talented Senior Software Engineer to join our engineering team. In this role, you will be responsible for designing, developing, and maintaining scalable web applications.</p>
-      
-      <h3>Responsibilities</h3>
-      <ul>
-        <li>Design and implement scalable web applications using modern technologies</li>
-        <li>Collaborate with cross-functional teams to define, design, and ship new features</li>
-        <li>Write clean, maintainable, and testable code</li>
-        <li>Participate in code reviews and contribute to team knowledge sharing</li>
-        <li>Troubleshoot, debug, and optimize application performance</li>
-      </ul>
-      
-      <h3>Requirements</h3>
-      <ul>
-        <li>Bachelor's degree in Computer Science or related field</li>
-        <li>5+ years of experience in software development</li>
-        <li>Strong proficiency in JavaScript, HTML, and CSS</li>
-        <li>Experience with React and Node.js</li>
-        <li>Familiarity with cloud platforms (AWS, GCP, or Azure)</li>
-        <li>Knowledge of containerization technologies (Docker, Kubernetes)</li>
-      </ul>
-      
-      <h3>Benefits</h3>
-      <ul>
-        <li>Competitive salary and equity package</li>
-        <li>Comprehensive health, dental, and vision insurance</li>
-        <li>Flexible work arrangements</li>
-        <li>Professional development opportunities</li>
-        <li>Generous PTO and parental leave</li>
-      </ul>
-    `,
-    companyInfo: {
-      name: 'Tech Corp',
-      description: 'Tech Corp is a leading technology company focused on building innovative solutions for the future.',
-      size: '1000-5000 employees',
-      industry: 'Software Development',
-      headquarters: 'San Francisco, CA'
-    }
-  };
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setJob(mockJob);
-      setLoading(false);
-    }, 1000);
-  }, [id]);
+  const { job, loading, error } = useJob(id);
 
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem' }}>
         <p>Loading job details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center', padding: '2rem' }}>
+        <p>Error loading job: {error.message}</p>
       </div>
     );
   }
@@ -125,7 +76,7 @@ const JobDetails = () => {
               {job.company}
             </p>
             <p style={{ color: '#6b7280' }}>
-              {job.location} • Posted {new Date(job.posted).toLocaleDateString()}
+              {job.location} • Posted {new Date(job.created_at).toLocaleDateString()}
             </p>
           </div>
           
@@ -182,7 +133,7 @@ const JobDetails = () => {
             </h2>
             
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              {job.skills.map((skill, index) => (
+              {job.skills?.map((skill, index) => (
                 <span
                   key={index}
                   style={{
@@ -214,17 +165,14 @@ const JobDetails = () => {
             </h2>
             
             <div style={{ marginBottom: '1rem' }}>
-              <h3 style={{ fontWeight: '500', marginBottom: '0.25rem' }}>{job.companyInfo.name}</h3>
-              <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
-                {job.companyInfo.industry}
-              </p>
+              <h3 style={{ fontWeight: '500', marginBottom: '0.25rem' }}>{job.company}</h3>
               <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                {job.companyInfo.size} • {job.companyInfo.headquarters}
+                {job.location}
               </p>
             </div>
             
             <p style={{ lineHeight: '1.5' }}>
-              {job.companyInfo.description}
+              No additional company information available.
             </p>
           </div>
           
@@ -241,7 +189,7 @@ const JobDetails = () => {
             
             <div style={{ marginBottom: '0.75rem' }}>
               <p style={{ fontWeight: '500', marginBottom: '0.25rem' }}>Salary Range</p>
-              <p style={{ color: '#6b7280' }}>{job.salary}</p>
+              <p style={{ color: '#6b7280' }}>{job.salary || 'Not specified'}</p>
             </div>
             
             <div style={{ marginBottom: '0.75rem' }}>
@@ -252,7 +200,7 @@ const JobDetails = () => {
             <div>
               <p style={{ fontWeight: '500', marginBottom: '0.25rem' }}>Posted</p>
               <p style={{ color: '#6b7280' }}>
-                {new Date(job.posted).toLocaleDateString()}
+                {new Date(job.created_at).toLocaleDateString()}
               </p>
             </div>
           </div>

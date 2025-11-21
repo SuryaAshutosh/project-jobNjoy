@@ -1,26 +1,54 @@
-import { useState, useEffect } from 'react';
-import { api } from '@/services/api';
+import { useState, useEffect, useRef } from 'react';
+import { jobService } from '@/services/jobService';
 
 export const useJobs = (filters = {}) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [realTimeUpdates, setRealTimeUpdates] = useState(0);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/jobs', { params: filters });
-        setJobs(response.data);
+        const data = await jobService.fetchJobs(filters);
+        if (mountedRef.current) {
+          setJobs(data);
+        }
       } catch (err) {
-        setError(err);
+        if (mountedRef.current) {
+          setError(err);
+        }
       } finally {
-        setLoading(false);
+        if (mountedRef.current) {
+          setLoading(false);
+        }
       }
     };
 
     fetchJobs();
   }, [JSON.stringify(filters)]);
 
-  return { jobs, loading, error };
+  useEffect(() => {
+    // Connect to real-time updates
+    jobService.connectToJobUpdates();
+    
+    // Subscribe to job updates
+    const unsubscribe = jobService.subscribeToJobUpdates((data) => {
+      if (data.type === 'job_update' && mountedRef.current) {
+        setRealTimeUpdates(prev => prev + 1);
+        // In a real implementation, you might want to add the new job to the list
+        // or update existing jobs
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      mountedRef.current = false;
+      unsubscribe();
+    };
+  }, []);
+
+  return { jobs, loading, error, realTimeUpdates };
 };

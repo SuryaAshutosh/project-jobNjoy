@@ -89,7 +89,15 @@ class BackgroundTasks:
         # In a real implementation, this would use threading or asyncio
         # For now, we'll just execute the function directly
         print(f"Executing background task: {func.__name__}")
-        return func(*args, **kwargs)
+        try:
+            result = func(*args, **kwargs)
+            print(f"Background task {func.__name__} completed successfully")
+            return result
+        except Exception as e:
+            print(f"Background task {func.__name__} failed: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            raise
 
 # Use Celery if Redis is configured, otherwise use simple background tasks
 if os.getenv('REDIS_URL'):

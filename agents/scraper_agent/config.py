@@ -62,6 +62,49 @@ SOURCES_CONFIG = [
         "params": {
             "page_limit": 3
         }
+    },
+    {
+        "name": "Jooble",
+        "adapter": "jooble",
+        "adapter_class": "JoobleAdapter",
+        "params": {
+            "max_pages": 3
+        }
+    },
+    {
+        "name": "Greenhouse",
+        "adapter": "greenhouse",
+        "adapter_class": "GreenhouseAdapter",
+        "params": {
+            "board_token": "example_board_token",
+            "max_pages": 3
+        }
+    },
+    {
+        "name": "Lever",
+        "adapter": "lever",
+        "adapter_class": "LeverAdapter",
+        "params": {
+            "clientname": "example_client",
+            "max_pages": 3
+        }
+    },
+    {
+        "name": "Workable",
+        "adapter": "workable",
+        "adapter_class": "WorkableAdapter",
+        "params": {
+            "clientname": "example_client",
+            "max_pages": 3
+        }
+    },
+    {
+        "name": "Careerjet",
+        "adapter": "careerjet",
+        "adapter_class": "CareerjetAdapter",
+        "params": {
+            "max_pages": 3
+        }
     }
 ]
 

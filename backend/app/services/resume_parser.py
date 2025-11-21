@@ -639,23 +639,27 @@ class ResumeParserService:
         """
         # For local storage, we can work directly with the file
         # For S3/MinIO, we would need to download it first
-        
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_filename = temp_file.name
-        
+    
         try:
             # Download file from storage (simplified for local storage)
             if file_url.startswith("http://localhost:8000/uploads/"):
                 # Local file - construct path
                 file_key = file_url.replace("http://localhost:8000/uploads/", "")
-                file_path = os.path.join(os.getenv("UPLOAD_DIR", "./uploads"), file_key)
+                upload_dir = os.getenv("UPLOAD_DIR", "./uploads")
+                file_path = os.path.join(upload_dir, file_key)
+                
+                # Log the file path for debugging
+                print(f"Attempting to parse file: {file_path}")
             else:
                 # S3/MinIO - download file
                 # This is a simplified implementation
                 # In a real implementation, you would download from S3
                 raise Exception("S3 download not implemented in this simplified version")
-            
+        
+            # Check if file exists
+            if not os.path.exists(file_path):
+                raise Exception(f"File not found: {file_path} (cwd: {os.getcwd()})")
+        
             # Determine file type and extract text
             if file_url.lower().endswith('.pdf'):
                 raw_text, metadata = self.extract_text_from_pdf(file_path)
@@ -664,25 +668,24 @@ class ResumeParserService:
             elif file_url.lower().endswith('.txt'):
                 raw_text, metadata = self.extract_text_from_txt(file_path)
             else:
-                raise Exception("Unsupported file type")
-            
+                raise Exception(f"Unsupported file type: {file_url}")
+        
             # Parse the extracted text
             parsed_data = self.parse_resume_content(raw_text)
-            
+        
             # Add metadata to parsed data
             parsed_data["ocr_used"] = metadata.get("ocr_used", False)
             parsed_data["parsing_confidence"] = metadata.get("confidence", 0.85)
-            
+        
             return {
                 "raw_text": raw_text,
                 "metadata": metadata,
                 "parsed_data": parsed_data
             }
-            
-        finally:
-            # Clean up temporary file
-            if os.path.exists(temp_filename):
-                os.unlink(temp_filename)
+        
+        except Exception as e:
+            print(f"Error processing resume file: {str(e)}")
+            raise
 
 # Global instance
 resume_parser_service = ResumeParserService()

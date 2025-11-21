@@ -2,7 +2,7 @@
 Jobs router for JobBuddy
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, WebSocket
 from sqlalchemy.orm import Session
 from typing import List
 from app.db import get_db
@@ -11,6 +11,7 @@ from app.crud.crud_job import create_job, get_job, get_jobs, get_jobs_count, get
 from app.core.auth import get_current_active_user, get_current_admin_user
 from app.core.tasks import background_task_manager
 from app.models.db_models import User
+from app.services.job_service import job_service
 import json
 
 router = APIRouter()
@@ -40,7 +41,7 @@ async def list_jobs(
     Returns:
         List[JobResponse]: List of jobs
     """
-    jobs = get_jobs(db, skip, limit, keyword, location, source_id, skill)
+    jobs = get_jobs_with_sources(db, skip, limit, keyword, location, source_id, skill)
     return jobs
 
 @router.get("/count")
@@ -82,7 +83,7 @@ async def get_job_by_id(
     Returns:
         JobResponse: The requested job
     """
-    db_job = get_job(db, job_id)
+    db_job = get_job_with_source(db, job_id)
     if not db_job:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -152,6 +153,9 @@ async def import_jobs(
         # Create job
         db_job = create_job(db, job_data)
         created_jobs.append(db_job)
+    
+    # Notify subscribers about new jobs
+    await job_service.process_new_jobs(created_jobs)
     
     return {
         "status": "imported",

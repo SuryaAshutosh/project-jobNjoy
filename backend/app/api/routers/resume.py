@@ -31,6 +31,7 @@ from app.core.tasks import background_task_manager
 from app.services.resume_parser import resume_parser_service
 from app.services.llm_adapter import llm_adapter
 from app.services.vector_service import vector_service
+from app.services.resume_enhancer import resume_enhancer
 from app.models.db_models import User, Resume, AILog
 from app.core.config import settings
 
@@ -97,9 +98,29 @@ async def upload_resume(
     db_resume = create_resume(db, resume_data, current_user.id)
     
     # Trigger resume parsing in background
-    background_tasks.add_task(parse_resume_background_task, str(db_resume.id), db)
+    # Note: FastAPI's BackgroundTasks doesn't support passing database sessions directly
+    # We need to use a different approach for background parsing
+    background_tasks.add_task(trigger_resume_parsing, str(db_resume.id))
     
     return db_resume
+
+def trigger_resume_parsing(resume_id: str):
+    """
+    Trigger resume parsing in a separate process
+    
+    Args:
+        resume_id: The ID of the resume to parse
+    """
+    # Create a new database session for the background task
+    from app.db import SessionLocal
+    db = SessionLocal()
+    try:
+        # Use the existing background task manager
+        background_task_manager.add_task(parse_resume_background_task, resume_id, db)
+    except Exception as e:
+        print(f"Error triggering resume parsing for {resume_id}: {str(e)}")
+    finally:
+        db.close()
 
 @router.post("/{resume_id}/parse")
 async def parse_resume(
@@ -404,6 +425,9 @@ def parse_resume_background_task(
         return {"status": "completed", "resume_id": resume_id, "result": result}
     except Exception as e:
         print(f"Error parsing resume {resume_id}: {str(e)}")
+        # Log the full traceback for debugging
+        import traceback
+        traceback.print_exc()
         return {"status": "error", "resume_id": resume_id, "error": str(e)}
 
 def parse_resume_sync(
@@ -430,6 +454,7 @@ def parse_resume_sync(
         raise Exception("Resume not found")
     
     # Process resume file
+    print(f"Processing resume file: {db_resume.file_url}")
     result = resume_parser_service.process_resume_file(db_resume.file_url)
     
     # Apply LLM refinement if requested
@@ -439,6 +464,18 @@ def parse_resume_sync(
         except Exception as e:
             print(f"LLM refinement failed for resume {resume_id}: {str(e)}")
             # Continue without LLM refinement
+    
+    # Enhance parsed data with additional insights
+    try:
+        enhanced_data = resume_enhancer.enhance_parsed_data(db_resume.raw_text, result["parsed_data"])
+        result["parsed_data"] = enhanced_data.dict()
+        
+        # Analyze resume quality
+        quality_analysis = resume_enhancer.analyze_resume_quality(enhanced_data)
+        result["parsed_data"]["quality_analysis"] = quality_analysis
+    except Exception as e:
+        print(f"Resume enhancement failed for resume {resume_id}: {str(e)}")
+        # Continue without enhancement
     
     # Generate vectors if requested
     if generate_vectors:

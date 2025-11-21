@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useResume } from '@/hooks/useResume';
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const { uploadResume, parseResume, getResumeById, loading: uploading, error } = useResume();
   const [uploaded, setUploaded] = useState(false);
+  const [uploadedResumeId, setUploadedResumeId] = useState(null);
   const [parsedData, setParsedData] = useState(null);
+  const [parsingStatus, setParsingStatus] = useState(null);
+  const [parsingProgress, setParsingProgress] = useState(0);
   
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -13,7 +17,7 @@ const UploadResume = () => {
   };
   
   const handleDragLeave = () => {
-    setIsDragging(true);
+    setIsDragging(false);
   };
   
   const handleDrop = (e) => {
@@ -31,39 +35,36 @@ const UploadResume = () => {
     }
   };
   
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) return;
     
-    setUploading(true);
-    
-    // Simulate file upload and parsing
-    setTimeout(() => {
-      setUploading(false);
+    try {
+      const response = await uploadResume(file);
       setUploaded(true);
+      setUploadedResumeId(response.id);
       
-      // Mock parsed data
-      setParsedData({
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 (555) 123-4567',
-        skills: ['React', 'Node.js', 'JavaScript', 'Python', 'SQL'],
-        experience: [
-          {
-            company: 'Tech Corp',
-            title: 'Senior Software Engineer',
-            duration: '2020 - Present'
-          },
-          {
-            company: 'Startup Inc',
-            title: 'Software Developer',
-            duration: '2018 - 2020'
-          }
-        ]
-      });
-    }, 2000);
+      // Trigger parsing after upload
+      setParsingStatus('parsing');
+      const parseResponse = await parseResume(response.id, { use_llm: true, background: false });
+      
+      if (parseResponse.status === 'completed') {
+        setParsingStatus('completed');
+        // Fetch the parsed resume data
+        const resumeData = await getResumeById(response.id);
+        setParsedData(resumeData.parsed_data);
+      } else {
+        setParsingStatus('error');
+        setParsedData({
+          message: "Failed to parse resume. Please try again."
+        });
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setParsingStatus('error');
+    }
   };
   
-  const handleParse = () => {
+  const handleParse = async () => {
     // In a real app, this would trigger parsing
     console.log('Parsing resume...');
   };
@@ -76,6 +77,19 @@ const UploadResume = () => {
           Upload your resume to automatically extract your skills and experience
         </p>
       </div>
+      
+      {error && (
+        <div style={{ 
+          marginBottom: '1rem', 
+          padding: '1rem', 
+          backgroundColor: '#fee', 
+          border: '1px solid #fecaca', 
+          borderRadius: '0.375rem', 
+          color: '#c53030' 
+        }}>
+          Error: {error.message}
+        </div>
+      )}
       
       {!uploaded ? (
         <div
@@ -164,7 +178,7 @@ const UploadResume = () => {
         </div>
       )}
       
-      {uploading && (
+      {(uploading || parsingStatus === 'parsing') && (
         <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
           <div style={{ marginBottom: '1rem' }}>
             <div style={{
@@ -177,7 +191,27 @@ const UploadResume = () => {
               animation: 'spin 1s linear infinite'
             }}></div>
           </div>
-          <p>Uploading and parsing your resume...</p>
+          <p>{uploading ? 'Uploading your resume...' : 'Parsing your resume...'}</p>
+          {parsingStatus === 'parsing' && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{
+                height: '8px',
+                backgroundColor: '#e5e7eb',
+                borderRadius: '4px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${parsingProgress}%`,
+                  backgroundColor: '#2563eb',
+                  transition: 'width 0.3s ease'
+                }}></div>
+              </div>
+              <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                Analyzing your skills and experience...
+              </p>
+            </div>
+          )}
         </div>
       )}
       
@@ -192,75 +226,115 @@ const UploadResume = () => {
           }}
         >
           <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
-            Parsed Resume Data
+            {parsedData.message ? 'Upload Complete' : 'Parsed Resume Data'}
           </h2>
           
-          <div style={{ marginBottom: '1rem' }}>
-            <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Personal Information</h3>
-            <p><strong>Name:</strong> {parsedData.name}</p>
-            <p><strong>Email:</strong> {parsedData.email}</p>
-            <p><strong>Phone:</strong> {parsedData.phone}</p>
-          </div>
-          
-          <div style={{ marginBottom: '1rem' }}>
-            <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Top Skills</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              {parsedData.skills.map((skill, index) => (
-                <span
-                  key={index}
-                  style={{
-                    backgroundColor: '#eff6ff',
-                    color: '#1d4ed8',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '0.375rem',
-                    fontSize: '0.875rem'
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Work Experience</h3>
-            {parsedData.experience.map((exp, index) => (
-              <div key={index} style={{ marginBottom: '0.75rem' }}>
-                <p style={{ fontWeight: '500' }}>{exp.title}</p>
-                <p>{exp.company} • {exp.duration}</p>
+          {parsedData.message ? (
+            <p>{parsedData.message}</p>
+          ) : (
+            <>
+              {/* Resume Quality Analysis */}
+              {parsedData.quality_analysis && (
+                <div style={{ 
+                  marginBottom: '1rem', 
+                  padding: '1rem', 
+                  backgroundColor: parsedData.quality_analysis.quality_score > 70 ? '#dcfce7' : '#fef3c7', 
+                  border: '1px solid', 
+                  borderColor: parsedData.quality_analysis.quality_score > 70 ? '#bbf7d0' : '#fde68a', 
+                  borderRadius: '0.375rem' 
+                }}>
+                  <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>
+                    Resume Quality: {parsedData.quality_analysis.quality_score}/100
+                  </h3>
+                  {parsedData.quality_analysis.suggestions.length > 0 && (
+                    <div>
+                      <p style={{ fontWeight: '500', marginBottom: '0.25rem' }}>Suggestions for improvement:</p>
+                      <ul style={{ paddingLeft: '1.25rem' }}>
+                        {parsedData.quality_analysis.suggestions.map((suggestion, index) => (
+                          <li key={index} style={{ marginBottom: '0.25rem' }}>{suggestion}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Personal Information */}
+              <div style={{ marginBottom: '1rem' }}>
+                <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Personal Information</h3>
+                {parsedData.personal_info ? (
+                  <>
+                    <p><strong>Name:</strong> {parsedData.personal_info.name || 'Not extracted'}</p>
+                    <p><strong>Email:</strong> {parsedData.personal_info.email || 'Not extracted'}</p>
+                    <p><strong>Phone:</strong> {parsedData.personal_info.phone || 'Not extracted'}</p>
+                  </>
+                ) : (
+                  <p>No personal information extracted</p>
+                )}
               </div>
-            ))}
-          </div>
-          
-          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem' }}>
-            <button
-              onClick={handleParse}
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                border: 'none',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Re-parse Resume
-            </button>
-            <button
-              style={{
-                backgroundColor: '#f3f4f6',
-                color: '#374151',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                border: '1px solid #d1d5db',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Edit Information
-            </button>
-          </div>
+              
+              {/* Skills */}
+              <div style={{ marginBottom: '1rem' }}>
+                <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Skills</h3>
+                {parsedData.skills && parsedData.skills.length > 0 ? (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {parsedData.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          backgroundColor: '#eff6ff',
+                          color: '#1d4ed8',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '0.375rem',
+                          fontSize: '0.875rem'
+                        }}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No skills extracted</p>
+                )}
+              </div>
+              
+              {/* Experience */}
+              <div style={{ marginBottom: '1rem' }}>
+                <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Work Experience</h3>
+                {parsedData.experience && parsedData.experience.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {parsedData.experience.map((exp, index) => (
+                      <div key={index} style={{ padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.375rem' }}>
+                        <p style={{ fontWeight: '500' }}>{exp.position || exp.title || 'No title'}</p>
+                        <p>{exp.company || 'No company'}</p>
+                        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>{exp.duration || 'No duration'}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No experience extracted</p>
+                )}
+              </div>
+              
+              {/* Education */}
+              <div>
+                <h3 style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Education</h3>
+                {parsedData.education && parsedData.education.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {parsedData.education.map((edu, index) => (
+                      <div key={index} style={{ padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.375rem' }}>
+                        <p style={{ fontWeight: '500' }}>{edu.degree || 'No degree'}</p>
+                        <p>{edu.institution || 'No institution'}</p>
+                        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>{edu.year || 'No year'}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No education extracted</p>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
