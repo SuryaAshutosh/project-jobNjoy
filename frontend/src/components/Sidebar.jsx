@@ -114,7 +114,7 @@ const Sidebar = () => {
           color: '#2563eb',
           marginBottom: '2rem'
         }}>
-          JobCopilot
+          jobSee
         </h1>
         
         <nav>

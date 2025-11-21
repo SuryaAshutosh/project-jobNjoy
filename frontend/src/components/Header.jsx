@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -7,10 +7,29 @@ const Header = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -33,7 +52,7 @@ const Header = () => {
           color: '#2563eb',
           textDecoration: 'none'
         }}>
-          JobCopilot
+          jobSee
         </Link>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -118,8 +137,9 @@ const Header = () => {
             )}
           </button>
           
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} className="user-dropdown" ref={dropdownRef}>
             <button
+              onClick={toggleDropdown}
               style={{
                 backgroundColor: 'transparent',
                 border: 'none',
@@ -153,8 +173,8 @@ const Header = () => {
               borderRadius: '0.375rem',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
               minWidth: '200px',
-              display: 'none'
-            }}>
+              display: isDropdownOpen ? 'block' : 'none'
+            }} className="dropdown-menu">
               <div style={{ padding: '1rem' }}>
                 <p style={{ fontWeight: '500' }}>{user ? user.name : 'User'}</p>
                 <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>

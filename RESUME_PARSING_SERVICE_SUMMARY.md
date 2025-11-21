@@ -110,7 +110,7 @@ Agents can interact with the service through these steps:
 S3_ENDPOINT_URL=http://localhost:9000
 S3_ACCESS_KEY_ID=minioadmin
 S3_SECRET_ACCESS_KEY=minioadmin
-S3_BUCKET_NAME=jobbuddy-resumes
+S3_BUCKET_NAME=jobsee-resumes
 
 # LLM (OpenAI)
 LLM_PROVIDER=openai

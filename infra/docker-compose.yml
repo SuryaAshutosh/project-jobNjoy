@@ -4,49 +4,49 @@ services:
   # PostgreSQL Database
   db:
     image: postgres:15
-    container_name: jobbuddy-db
+    container_name: jobsee-db
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-jobbuddy}
-      POSTGRES_USER: ${POSTGRES_USER:-jobbuddy}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobbuddy}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/schema.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
-      - jobbuddy-network
+      - jobsee-network
 
   # Redis for caching and background jobs
   redis:
     image: redis:7-alpine
-    container_name: jobbuddy-redis
+    container_name: jobsee-redis
     restart: always
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - jobbuddy-network
+      - jobsee-network
 
   # Backend API
   backend:
     build:
       context: ../backend
       dockerfile: Dockerfile
-    container_name: jobbuddy-backend
+    container_name: jobsee-backend
     restart: always
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://jobbuddy:jobbuddy@db:5432/jobbuddy
+      - DATABASE_URL=postgresql://jobsee:jobsee@db:5432/jobsee
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
       - redis
     networks:
-      - jobbuddy-network
+      - jobsee-network
 
   # Frontend (commented out due to compilation errors)
   # frontend:
@@ -62,7 +62,7 @@ services:
   #   depends_on:
   #     - backend
   #   networks:
-  #     - jobbuddy-network
+  #     - jobsee-network
 
   # Nginx reverse proxy (commented out due to frontend dependency)
   # nginx:
@@ -79,10 +79,10 @@ services:
   #     - backend
   #     - frontend
   #   networks:
-  #     - jobbuddy-network
+  #     - jobsee-network
 
 networks:
-  jobbuddy-network:
+  jobsee-network:
     driver: bridge
 
 volumes:

@@ -41,5 +41,5 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "service": "jobbuddy-backend"
+        "service": "jobsee-backend"
     }

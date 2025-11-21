@@ -21,7 +21,7 @@ class StorageClient:
             aws_secret_access_key=os.getenv('S3_SECRET_ACCESS_KEY'),
             region_name=os.getenv('S3_REGION', 'us-east-1')
         )
-        self.bucket_name = os.getenv('S3_BUCKET_NAME', 'jobbuddy-resumes')
+        self.bucket_name = os.getenv('S3_BUCKET_NAME', 'jobsee-resumes')
         
         # Create bucket if it doesn't exist
         self._create_bucket_if_not_exists()

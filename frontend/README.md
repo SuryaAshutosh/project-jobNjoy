@@ -1,6 +1,6 @@
-# JobCopilot Frontend
+# jobSee Frontend
 
-A modern React frontend for the JobCopilot platform, built with Vite, TypeScript, and Tailwind CSS.
+A modern React frontend for the jobSee platform, built with Vite, TypeScript, and Tailwind CSS.
 
 ## Features
 
@@ -73,7 +73,7 @@ src/
 
 ## Development
 
-The frontend is designed to work with the JobCopilot backend API. Make sure the backend is running and accessible at the configured API URL.
+The frontend is designed to work with the jobSee backend API. Make sure the backend is running and accessible at the configured API URL.
 
 ## Deployment
 

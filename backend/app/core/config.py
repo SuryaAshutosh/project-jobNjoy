@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 import os
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "JobBuddy"
+    PROJECT_NAME: str = "jobSee"
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
@@ -11,9 +11,9 @@ class Settings(BaseSettings):
     
     # Database
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "jobbuddy_user")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "jobbuddy_pass")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "jobbuddy_db")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "jobbuddy")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "jobbuddy")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "jobbuddy")
     DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:5432/{POSTGRES_DB}"
     
     # Redis

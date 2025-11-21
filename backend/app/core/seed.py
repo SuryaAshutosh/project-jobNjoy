@@ -1,5 +1,5 @@
 """
-Seed script for JobBuddy database
+Seed script for jobSee database
 Populates the database with sample data for development and testing
 """
 
@@ -17,7 +17,7 @@ from ..models.db_models import (
 # Database connection configuration
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    "postgresql://jobbuddy:jobbuddy@localhost:5432/jobbuddy"
+    "postgresql://jobsee:jobsee@localhost:5432/jobsee"
 )
 
 def seed_database():

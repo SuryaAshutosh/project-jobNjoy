@@ -5,7 +5,7 @@ This file demonstrates how to configure the scraper agent for different environm
 
 # Example production configuration
 PRODUCTION_CONFIG = {
-    "backend_url": "https://api.yourjobbuddy.com",
+    "backend_url": "https://api.jobsee.com",
     "api_key": "your-production-api-key",
     "proxy_config": {
         "proxies": [

@@ -11,11 +11,11 @@ services:
       - SCRAPER_API_KEY=your-scraper-api-key
       - LOG_LEVEL=INFO
     networks:
-      - jobbuddy-network
+      - jobsee-network
     depends_on:
       - backend
     restart: unless-stopped
 
 networks:
-  jobbuddy-network:
+  jobsee-network:
     external: true

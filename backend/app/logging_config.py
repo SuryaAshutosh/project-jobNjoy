@@ -1,11 +1,12 @@
 """
-Logging configuration for JobBuddy
+Logging configuration for jobSee
 """
 
 import logging
 import sys
 from typing import Union
 import json
+import os
 from datetime import datetime
 
 class JSONFormatter(logging.Formatter):
@@ -49,7 +50,7 @@ def setup_logging(
         include_sentry: Whether to include Sentry integration
     """
     # Create logger
-    logger = logging.getLogger("jobbuddy")
+    logger = logging.getLogger("jobsee")
     logger.setLevel(level)
     
     # Create console handler
@@ -90,7 +91,7 @@ def setup_logging(
 setup_logging()
 
 # Create a logger instance for use in the application
-app_logger = logging.getLogger("jobbuddy")
+app_logger = logging.getLogger("jobsee")
 
 # Example usage:
 # app_logger.info("Application started", extra={"version": "1.0.0"})

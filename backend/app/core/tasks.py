@@ -1,5 +1,5 @@
 """
-Background task utilities for JobBuddy
+Background task utilities for jobSee
 """
 
 from celery import Celery
@@ -8,7 +8,7 @@ import os
 
 # Initialize Celery
 celery_app = Celery(
-    "jobbuddy",
+    "jobsee",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
 )
