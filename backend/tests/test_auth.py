@@ -15,7 +15,7 @@ def test_register_user():
         json={
             "name": "Test User",
             "email": "test@example.com",
-            "password": "testpassword123"
+            "password": "testpass123"
         }
     )
     assert response.status_code == 201
@@ -33,7 +33,7 @@ def test_register_duplicate_user():
         json={
             "name": "Test User",
             "email": "duplicate@example.com",
-            "password": "testpassword123"
+            "password": "testpass123"
         }
     )
     
@@ -43,7 +43,7 @@ def test_register_duplicate_user():
         json={
             "name": "Test User 2",
             "email": "duplicate@example.com",
-            "password": "testpassword123"
+            "password": "testpass123"
         }
     )
     assert response.status_code == 400
@@ -57,7 +57,7 @@ def test_login_user():
         json={
             "name": "Login Test User",
             "email": "login@example.com",
-            "password": "loginpassword123"
+            "password": "loginpass123"
         }
     )
     
@@ -66,7 +66,7 @@ def test_login_user():
         "/api/auth/login",
         data={
             "username": "login@example.com",
-            "password": "loginpassword123"
+            "password": "loginpass123"
         }
     )
     assert response.status_code == 200

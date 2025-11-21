@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -10,6 +11,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,14 +25,10 @@ const Register = () => {
     setLoading(true);
     
     try {
-      // In a real app, we would call the API here
-      // const response = await api.post('/auth/register', { name, email, password });
-      // For now, we'll just simulate a successful registration
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
+      await register(name, email, password);
+      navigate('/login');
     } catch (err) {
-      setError('Failed to register');
+      setError(err.response?.data?.detail || 'Failed to register');
     } finally {
       setLoading(false);
     }

@@ -7,9 +7,9 @@ services:
     container_name: jobsee-db
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-jobsee}
-      POSTGRES_USER: ${POSTGRES_USER:-jobsee}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobsee}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/schema.sql:/docker-entrypoint-initdb.d/init.sql
